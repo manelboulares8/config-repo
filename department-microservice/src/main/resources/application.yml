@@ -1,6 +1,11 @@
 spring:
+  profiles:
+    active: "prod"
+  config :
+    import : "optional:configserver:http://localhost:9999/"
+
   application:
-    name: department
+    name: institut
   datasource:
     url: 'jdbc:h2:mem:depdb'
   h2:
@@ -12,9 +17,13 @@ spring:
       ddl-auto: update
   cloud:
     config:
-      enabled: false
+      enabled: true
     discovery:
-      enabled: false
+      enabled: true
+  eureka:
+    client:
+      service-url:
+        defaultZone: 'http://localhost:8761/eureka/'
 server:
   port: 8083
 management:
@@ -22,3 +31,7 @@ management:
     web:
       exposure:
         include: '*'
+
+eureka:
+  instance:
+    prefer-ip-address: true

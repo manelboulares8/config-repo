@@ -15,6 +15,7 @@ public class EtudiantDto {
     private String dateNaissance;
     private String classe;
     private String email;
-
+    private String nomI;
+    private String localisation;
 
 }
