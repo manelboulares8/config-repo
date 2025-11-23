@@ -1,38 +1,47 @@
 server:
   port: 8888
+
 spring:
   application:
     name: gatewayserver
+
   cloud:
     config:
-      enabled: false
+      enabled: false     # No config server
     discovery:
-      enabled: true
+      enabled: true      # Enable Eureka discovery
+
     gateway:
-      discovery:
-        locator:
-          enabled: false
       routes:
-        - id: r1
-          uri: lb://INSTITUT
+        - id: institut-ms
+          uri: lb://institut
           predicates:
-          - Path= /api/ins/**
-        - id: r2
-          uri: lb://ETUDIANT
+            - Path=/api/ins/**
+        - id: etudiants-ms
+          uri: lb://etudiant
           predicates:
-          - Path= /api/etudiants/**
-  eureka:
-    client:
-      service-url:
-        defaultZone: 'http://localhost:8761/eureka/'
+            - Path=/api/etudiants/**
+        - id: institut-ms2
+          uri: lb://institut
+          predicates:
+            - Path=/api/ins/**
+
+
+# Eureka configuration should be at ROOT level, not under spring
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: ${DISCOVERY_SERVICE_URL:http://localhost:8761/eureka}
+  instance:
+    prefer-ip-address: true    # Set to false for Docker
+
 management:
   endpoints:
     web:
       exposure:
-        include: '*'
+        include: '*'     # Expose actuator endpoints
   endpoint:
     gateway:
-      access: unrestricted
-eureka:
-  instance:
-    prefer-ip-address: true
+      enabled: true
